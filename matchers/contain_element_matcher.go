@@ -8,6 +8,7 @@ import (
 	"reflect"
 
 	"github.com/onsi/gomega/format"
+	"github.com/onsi/gomega/matchers/internal/miter"
 )
 
 type ContainElementMatcher struct {
@@ -16,8 +17,8 @@ type ContainElementMatcher struct {
 }
 
 func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, err error) {
-	if !isArrayOrSlice(actual) && !isMap(actual) {
-		return false, fmt.Errorf("ContainElement matcher expects an array/slice/map.  Got:\n%s", format.Object(actual, 1))
+	if !isArrayOrSlice(actual) && !isMap(actual) && !miter.IsIter(actual) {
+		return false, fmt.Errorf("ContainElement matcher expects an array/slice/map/iterator.  Got:\n%s", format.Object(actual, 1))
 	}
 
 	var actualT reflect.Type
@@ -26,6 +27,8 @@ func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, e
 	case l > 1:
 		return false, errors.New("ContainElement matcher expects at most a single optional pointer to store its findings at")
 	case l == 1:
+		// Check the optional result arg to point to a single value/array/slice
+		// of a type compatible with the actual value.
 		if reflect.ValueOf(matcher.Result[0]).Kind() != reflect.Ptr {
 			return false, fmt.Errorf("ContainElement matcher expects a non-nil pointer to store its findings at.  Got\n%s",
 				format.Object(matcher.Result[0], 1))
