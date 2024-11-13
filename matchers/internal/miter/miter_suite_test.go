@@ -9,5 +9,5 @@ import (
 
 func TestMatcherIter(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Matcher Iter Suite")
+	RunSpecs(t, "Matcher Iter Support Suite")
 }
