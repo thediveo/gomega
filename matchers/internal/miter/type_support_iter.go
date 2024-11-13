@@ -13,7 +13,7 @@ import (
 // true also for other value types that are range-able, such as integers,
 // slices, et cetera. Here, we aim only at range-able (iterator) functions.
 func IsIter(it any) bool {
-	if it == nil {
+	if it == nil { // on purpose we only test for untyped nil.
 		return false
 	}
 	// reject all non-iterator-func values, even if they're range-able.
@@ -47,6 +47,25 @@ func IterKVTypes(it any) (k, v reflect.Type) {
 	return
 }
 
+// IsSeq2 returns true if the passed iterator function is compatible with
+// iter.Seq2, otherwise false.
+//
+// IsSeq2 hides the Go 1.23+ specific reflect.Type.CanSeq2 behind a facade which
+// is empty for Go versions before 1.23.
+func IsSeq2(it any) bool {
+	return reflect.TypeOf(it).CanSeq2()
+}
+
+// isNilly returns true if v is either an untyped nil, or is a nil function (not
+// necessarily an iterator function).
+func isNilly(v any) bool {
+	if v == nil {
+		return true
+	}
+	rv := reflect.ValueOf(v)
+	return rv.Kind() == reflect.Func && rv.IsNil()
+}
+
 // IterateV loops over the elements produced by an iterator function, passing
 // the elements to the specified yield function individually and stopping only
 // when either the iterator function runs out of elements or the yield function
@@ -56,7 +75,7 @@ func IterKVTypes(it any) (k, v reflect.Type) {
 // specific parts behind a facade which is empty for Go versions before 1.23, in
 // order to simplify code maintenance for matchers when using older Go versions.
 func IterateV(it any, yield func(v reflect.Value) bool) {
-	if it == nil {
+	if isNilly(it) {
 		return
 	}
 	// reject all non-iterator-func values, even if they're range-able.
@@ -83,7 +102,7 @@ func IterateV(it any, yield func(v reflect.Value) bool) {
 // specific parts behind a facade which is empty for Go versions before 1.23, in
 // order to simplify code maintenance for matchers when using older Go versions.
 func IterateKV(it any, yield func(k, v reflect.Value) bool) {
-	if it == nil {
+	if isNilly(it) {
 		return
 	}
 	// reject all non-iterator-func values, even if they're range-able.

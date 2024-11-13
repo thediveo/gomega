@@ -16,9 +16,12 @@ import "reflect"
 // IsIter always returns false for Go versions before 1.23 as there is no
 // iterator (function) pattern defined yet; see also:
 // https://tip.golang.org/blog/range-functions.
-func IsIter(i any) bool {
-	return false
-}
+func IsIter(i any) bool { return false }
+
+// IsSeq2 always returns false for Go versions before 1.23 as there is no
+// iterator (function) pattern defined yet; see also:
+// https://tip.golang.org/blog/range-functions.
+func IsSeq2(it any) bool { return false }
 
 // IterKVTypes always returns nil reflection types for Go versions before 1.23
 // as there is no iterator (function) pattern defined yet; see also:

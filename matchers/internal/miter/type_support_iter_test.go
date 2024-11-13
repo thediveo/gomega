@@ -37,6 +37,12 @@ var _ = Describe("iterator function types", func() {
 
 	})
 
+	It("detects iter.Seq2", func() {
+		Expect(IsSeq2(42)).To(BeFalse())
+		Expect(IsSeq2(func(func(int) bool) {})).To(BeFalse())
+		Expect(IsSeq2(func(func(int, int) bool) {})).To(BeTrue())
+	})
+
 	When("getting iterator function K, V types", func() {
 
 		It("has no types when nil", func() {
@@ -83,6 +89,13 @@ var _ = Describe("iterator function types", func() {
 		It("doesn't loop over a nil iterator", func() {
 			Expect(func() {
 				IterateV(nil, func(v reflect.Value) bool { panic("reflection yield must not be called") })
+			}).NotTo(Panic())
+		})
+
+		It("doesn't loop over a typed-nil iterator", func() {
+			var nilIter func(func(string) bool)
+			Expect(func() {
+				IterateV(nilIter, func(v reflect.Value) bool { panic("reflection yield must not be called") })
 			}).NotTo(Panic())
 		})
 
@@ -144,6 +157,13 @@ var _ = Describe("iterator function types", func() {
 		It("doesn't loop over a nil iterator", func() {
 			Expect(func() {
 				IterateKV(nil, func(k, v reflect.Value) bool { panic("reflection yield must not be called") })
+			}).NotTo(Panic())
+		})
+
+		It("doesn't loop over a typed-nil iterator", func() {
+			var nilIter2 func(func(int, string) bool)
+			Expect(func() {
+				IterateKV(nilIter2, func(k, v reflect.Value) bool { panic("reflection yield must not be called") })
 			}).NotTo(Panic())
 		})
 
