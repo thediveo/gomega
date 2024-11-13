@@ -82,6 +82,12 @@ var _ = Describe("ContainElement", func() {
 				MatchError(MatchRegexp(`expects a non-nil pointer.+ Got\n +<nil>: nil`)))
 		})
 
+		It("rejects multiple result args", func() {
+			Expect(ContainElement("foo", 42, 43).Match([]string{"foo"})).Error().To(
+				MatchError(MatchRegexp(`expects at most a single optional pointer`)))
+
+		})
+
 		Context("with match(es)", func() {
 			When("passed an assignable result reference", func() {
 				It("should assign a single finding to a scalar result reference", func() {

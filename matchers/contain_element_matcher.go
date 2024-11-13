@@ -94,9 +94,18 @@ func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, e
 		default:
 			// can we assign a (single) element in actual to what the result arg
 			// points to?
-			if !actualT.Elem().AssignableTo(result.Type()) {
-				return false, fmt.Errorf("ContainElement cannot return findings.  Need *%s, got *%s",
-					actualT.Elem().String(), result.Type().String())
+			switch {
+			case miter.IsIter(actual):
+				_, actualvT := miter.IterKVTypes(actual)
+				if !actualvT.AssignableTo(result.Type()) {
+					return false, fmt.Errorf("ContainElement cannot return findings.  Need *%s, got *%s",
+						actualvT.String(), result.Type().String())
+				}
+			default:
+				if !actualT.Elem().AssignableTo(result.Type()) {
+					return false, fmt.Errorf("ContainElement cannot return findings.  Need *%s, got *%s",
+						actualT.Elem().String(), result.Type().String())
+				}
 			}
 		}
 	}
@@ -190,7 +199,7 @@ func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, e
 		if actualkT == nil {
 			miter.IterateV(actual, func(v reflect.Value) bool {
 				var err error
-				success, err = elemMatcher.Match(v)
+				success, err = elemMatcher.Match(v.Interface())
 				if err != nil {
 					lastError = err
 					return true // iterate on...
@@ -199,14 +208,14 @@ func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, e
 					if result.Kind() == reflect.Invalid {
 						return false // a match and no result needed, so we're done
 					}
+					found(reflect.Value{}, v)
 				}
-				found(reflect.Value{}, v)
 				return true // iterate on...
 			})
 		} else {
 			miter.IterateKV(actual, func(k, v reflect.Value) bool {
 				var err error
-				success, err = elemMatcher.Match(v)
+				success, err = elemMatcher.Match(v.Interface())
 				if err != nil {
 					lastError = err
 					return true // iterate on...
@@ -219,6 +228,9 @@ func (matcher *ContainElementMatcher) Match(actual interface{}) (success bool, e
 				}
 				return true // iterate on...
 			})
+		}
+		if success && result.Kind() == reflect.Invalid {
+			return true, nil
 		}
 	}
 
