@@ -1381,6 +1381,8 @@ By default `HaveKeyWithValue()` uses the `Equal()` matcher under the hood to ass
 Ω(map[string]int{"Foo": 3, "BazFoo": 4}).Should(HaveKeyWithValue(MatchRegexp(`.+Foo$`), BeNumerically(">", 3)))
 ```
 
+### Working with Structs
+
 #### HaveField(field interface{}, value interface{})
 
 ```go
