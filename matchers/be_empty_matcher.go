@@ -17,13 +17,13 @@ func (matcher *BeEmptyMatcher) Match(actual interface{}) (success bool, err erro
 	// short-circuit the iterator case, as we only need to see the first
 	// element, if any.
 	if miter.IsIter(actual) {
-		var l int
+		var length int
 		if miter.IsSeq2(actual) {
-			miter.IterateKV(actual, func(k, v reflect.Value) bool { l++; return false })
+			miter.IterateKV(actual, func(k, v reflect.Value) bool { length++; return false })
 		} else {
-			miter.IterateV(actual, func(v reflect.Value) bool { l++; return false })
+			miter.IterateV(actual, func(v reflect.Value) bool { length++; return false })
 		}
-		return l == 0, nil
+		return length == 0, nil
 	}
 
 	length, ok := lengthOf(actual)

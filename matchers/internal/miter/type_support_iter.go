@@ -53,7 +53,11 @@ func IterKVTypes(it any) (k, v reflect.Type) {
 // IsSeq2 hides the Go 1.23+ specific reflect.Type.CanSeq2 behind a facade which
 // is empty for Go versions before 1.23.
 func IsSeq2(it any) bool {
-	return reflect.TypeOf(it).CanSeq2()
+	if it == nil {
+		return false
+	}
+	t := reflect.TypeOf(it)
+	return t.Kind() == reflect.Func && t.CanSeq2()
 }
 
 // isNilly returns true if v is either an untyped nil, or is a nil function (not

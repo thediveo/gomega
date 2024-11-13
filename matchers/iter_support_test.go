@@ -1,6 +1,13 @@
 package matchers_test
 
-var universalElements = []string{"foo", "bar", "baz"}
+var (
+	universalElements = []string{"foo", "bar", "baz"}
+	universalMap      = map[string]int{
+		"foo": 0,
+		"bar": 42,
+		"baz": 666,
+	}
+)
 
 func universalIter(yield func(string) bool) {
 	for _, element := range universalElements {
@@ -21,3 +28,11 @@ func universalIter2(yield func(int, string) bool) {
 func emptyIter(yield func(string) bool) {}
 
 func emptyIter2(yield func(int, string) bool) {}
+
+func universalMapIter2(yield func(string, int) bool) {
+	for k, v := range universalMap {
+		if !yield(k, v) {
+			return
+		}
+	}
+}
