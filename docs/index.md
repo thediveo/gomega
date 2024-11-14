@@ -1116,7 +1116,7 @@ It is an error for either `ACTUAL` or `EXPECTED` to be invalid YAML.
 Ω(ACTUAL).Should(BeEmpty())
 ```
 
-succeeds if `ACTUAL` is, in fact, empty. `ACTUAL` must be of type `string`, `array`, `map`, `chan`, or `slice`. Starting with Go 1.23, `ACTUAL` can be also an iterator function with an `iter.Seq` or `iter.Seq2`-like function signature. It is an error for `ACTUAL` to have any other type.
+succeeds if `ACTUAL` is, in fact, empty. `ACTUAL` must be of type `string`, `array`, `map`, `chan`, or `slice`. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq` or `iter.Seq2`. It is an error for `ACTUAL` to have any other type.
 
 #### HaveLen(count int)
 
@@ -1124,7 +1124,7 @@ succeeds if `ACTUAL` is, in fact, empty. `ACTUAL` must be of type `string`, `arr
 Ω(ACTUAL).Should(HaveLen(INT))
 ```
 
-succeeds if the length of `ACTUAL` is `INT`. `ACTUAL` must be of type `string`, `array`, `map`, `chan`, or `slice`.  Starting with Go 1.23, `ACTUAL` can be also an iterator function with an `iter.Seq` or `iter.Seq2`-like function signature. It is an error for `ACTUAL` to have any other type.
+succeeds if the length of `ACTUAL` is `INT`. `ACTUAL` must be of type `string`, `array`, `map`, `chan`, or `slice`.  Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq` or `iter.Seq2`. It is an error for `ACTUAL` to have any other type.
 
 #### HaveCap(count int)
 
@@ -1147,7 +1147,7 @@ or
 ```
 
 
-succeeds if `ACTUAL` contains an element that equals `ELEMENT`.  `ACTUAL` must be an `array`, `slice`, or `map`. Starting with Go 1.23, `ACTUAL` can be also an iterator function with an `iter.Seq` or `iter.Seq2`-like function signature. It is an error for it to have any other type.  For `map`s `ContainElement` searches through the map's values (not keys!). Similarly, for an `iter.Seq2`-like iterator function `ContainElement` searches through the collection's "v" values of the (k, v) pairs.
+succeeds if `ACTUAL` contains an element that equals `ELEMENT`.  `ACTUAL` must be an `array`, `slice`, or `map`. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq` or `iter.Seq2`. It is an error for it to have any other type.  For `map`s `ContainElement` searches through the map's values (not keys!). Similarly, for an iterator assignable to `iter.Seq2` `ContainElement` searches through the collection's "v" values of the (k, v) pairs.
 
 By default `ContainElement()` uses the `Equal()` matcher under the hood to assert equality between `ACTUAL`'s elements and `ELEMENT`.  You can change this, however, by passing `ContainElement` a `GomegaMatcher`. For example, to check that a slice of strings has an element that matches a substring:
 
@@ -1359,7 +1359,7 @@ By default `HaveEach()` uses the `Equal()` matcher under the hood to assert equa
 Ω(ACTUAL).Should(HaveKey(KEY))
 ```
 
-succeeds if `ACTUAL` is a map with a key that equals `KEY`.  It is an error for `ACTUAL` to not be a `map`.
+succeeds if `ACTUAL` is a map with a key that equals `KEY`. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq2` and `HaveKey(KEY)` then succeeds if the iterator produces a (`KEY`, `_`) pair. It is an error for `ACTUAL` to have any other type than `map` or `iter.Seq2`.
 
 By default `HaveKey()` uses the `Equal()` matcher under the hood to assert equality between `ACTUAL`'s keys and `KEY`.  You can change this, however, by passing `HaveKey` a `GomegaMatcher`. For example, to check that a map has a key that matches a regular expression:
 
@@ -1373,7 +1373,7 @@ By default `HaveKey()` uses the `Equal()` matcher under the hood to assert equal
 Ω(ACTUAL).Should(HaveKeyWithValue(KEY, VALUE))
 ```
 
-succeeds if `ACTUAL` is a map with a key that equals `KEY` mapping to a value that equals `VALUE`.  It is an error for `ACTUAL` to not be a `map`.
+succeeds if `ACTUAL` is a map with a key that equals `KEY` mapping to a value that equals `VALUE`. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq2` and `HaveKeyWithValue(KEY)` then succeeds if the iterator produces a (`KEY`, `VALUE`) pair. It is an error for `ACTUAL` to have any other type than `map` or `iter.Seq2`.
 
 By default `HaveKeyWithValue()` uses the `Equal()` matcher under the hood to assert equality between `ACTUAL`'s keys and `KEY` and between the associated value and `VALUE`.  You can change this, however, by passing `HaveKeyWithValue` a `GomegaMatcher` for either parameter. For example, to check that a map has a key that matches a regular expression and which is also associated with a value that passes some numerical threshold:
 
