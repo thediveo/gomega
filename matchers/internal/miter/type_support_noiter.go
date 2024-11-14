@@ -13,6 +13,9 @@ package miter
 
 import "reflect"
 
+// HasIterators always returns false for Go versions before 1.23.
+func HasIterators() bool { return false }
+
 // IsIter always returns false for Go versions before 1.23 as there is no
 // iterator (function) pattern defined yet; see also:
 // https://tip.golang.org/blog/range-functions.

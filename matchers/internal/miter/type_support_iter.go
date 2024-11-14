@@ -6,6 +6,9 @@ import (
 	"reflect"
 )
 
+// HasIterators always returns false for Go versions before 1.23.
+func HasIterators() bool { return true }
+
 // IsIter returns true if the specified value is a function type that can be
 // range-d over, otherwise false.
 //
