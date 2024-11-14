@@ -1343,7 +1343,7 @@ Note that Go's type system does not allow you to write this as `HaveExactElement
 Ω(ACTUAL).Should(HaveEach(ELEMENT))
 ```
 
-succeeds if `ACTUAL` solely consists of elements that equal `ELEMENT`. `ACTUAL` must be an `array`, `slice`, or `map`. For `map`s `HaveEach` searches through the map's values, not its keys. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq` or `iter.Seq2`. For `iter.Seq2` `HaveEach` searches through the `k` part of the yielded (`k`, _) pairs.
+succeeds if `ACTUAL` solely consists of elements that equal `ELEMENT`. `ACTUAL` must be an `array`, `slice`, or `map`. For `map`s `HaveEach` searches through the map's values, not its keys. Starting with Go 1.23, `ACTUAL` can be also an iterator assignable to `iter.Seq` or `iter.Seq2`. For `iter.Seq2` `HaveEach` searches through the `v` part of the yielded (_, `v`) pairs.
 
 In order to avoid ambiguity it is an error for `ACTUAL` to be an empty `array`, `slice`, or `map` (or a correctly typed `nil`) -- in these cases it cannot be decided if `HaveEach` should match, or should not match. If in your test it is acceptable for `ACTUAL` to be empty, you can use `Or(BeEmpty(), HaveEach(ELEMENT))` instead. Similar, an iterator not yielding any elements is also considered to be an error.
 
